@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BIKRAM HACKS</title>
+  <style>
+    body {
+      background-color: black;
+      color: #00ff00;
+      font-family: 'Orbitron', sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      top: 0;
+      left: 0;
+    }
+
+    .container {
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 48px;
+    }
+
+    .btn {
+      display: block;
+      width: 80%;
+      margin: 10px auto;
+      padding: 15px;
+      font-size: 18px;
+      background: #000000;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #00ff00;
+      cursor: pointer;
+    }
+
+    .hidden-admin {
+      position: fixed;
+      bottom: 5px;
+      right: 5px;
+      font-size: 10px;
+      opacity: 0.2;
+      cursor: pointer;
+    }
+
+    .admin-panel {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .message {
+      font-size: 22px;
+      margin-top: 20px;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 14px;
+    }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+  <div class="container" id="main-content">
+    <h1>BIKRAM HACKER</h1>
+    <div id="maintenance-msg" class="message" style="display:none;">
+      We are currently performing maintenance. Please check back later.
+    </div>
+
+    <div id="normal-content" style="display:none;">
+      <button class="btn">VIP BIKRAM MODS</button>
+      <button class="btn">SERVER VIP</button>
+      <button class="btn">PREMIUM SERVER</button>
+      <div class="message">AI Prediction: <span id="prediction">LOADING...</span></div>
+    </div>
+
+    <div class="admin-panel" id="admin-panel">
+      <button class="btn" onclick="toggleMaintenance()">Toggle Maintenance Mode</button>
+    </div>
+
+    <footer>Powered by @Win1miness
+  </div>
+
+  <div class="hidden-admin" onclick="promptAdmin()">ADMIN</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBPZ_WU7QDJxCa4bbPZF6acXDoogqcm5Q4",
+      authDomain: "imdibet-2f970.firebaseapp.com",
+      databaseURL: "https://imdibet-2f970-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "imdibet-2f970",
+      storageBucket: "imdibet-2f970.appspot.com",
+      messagingSenderId: "916273548172",
+      appId: "1:916273548172:web:YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const maintenanceRef = db.ref("maintenance/isOn");
+
+    // Load Maintenance Mode from Firebase
+    function loadMode() {
+      maintenanceRef.on("value", snapshot => {
+        const isOn = snapshot.val();
+        document.getElementById("maintenance-msg").style.display = isOn ? "block" : "none";
+        document.getElementById("normal-content").style.display = isOn ? "none" : "block";
+      });
+    }
+
+    // Toggle Maintenance Mode (Admin)
+    function toggleMaintenance() {
+      maintenanceRef.once("value").then(snapshot => {
+        const current = snapshot.val();
+        maintenanceRef.set(!current);
+        alert("Maintenance mode is now " + (!current ? "ENABLED" : "DISABLED"));
+      });
+    }
+
+    // Prompt Admin Access
+    function promptAdmin() {
+      const password = prompt("Enter Admin Password:");
+      if (password === "jetx") {
+        document.getElementById("admin-panel").style.display = "block";
+      } else {
+        alert("Incorrect password.");
+      }
+    }
+
+    // Fake AI prediction
+    setInterval(() => {
+      const now = new Date();
+      const min = now.getMinutes();
+      const time = now.toLocaleTimeString('en-GB', { hour12: false });
+      const prediction = (min % 2 === 0 || min % 5 === 0) ? "BIG" : "SMALL";
+      const el = document.getElementById("prediction");
+      if (el) el.textContent = `${prediction} (${time})`;
+    }, 1000);
+
+    // Start
+    window.onload = function () {
+      particlesJS("particles-js", {
+        particles: {
+          number: { value: 100 },
+          color: { value: "#00ff00" },
+          shape: { type: "circle" },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: {
+            enable: true,
+            distance: 150,
+            color: "#00ff00",
+            opacity: 0.4,
+            width: 1
+          },
+          move: { enable: true, speed: 1 }
+        },
+        interactivity: {
+          detect_on: "canvas",
+          events: { onhover: { enable: true, mode: "repulse" } },
+          modes: { repulse: { distance: 100 } }
+        },
+        retina_detect: true
+      });
+
+      loadMode();
+    };
+  </script>
+</body>
+</html>
